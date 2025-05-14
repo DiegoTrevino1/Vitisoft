@@ -14,9 +14,9 @@
       html,
       body,
       #map {
-        height: 100%;       /* Full height for map container */
-        margin: 0;          /* Remove default margin */
-        padding: 0;         /* Remove default padding */
+        height: 100%; /* Full height for map container */
+        margin: 0; /* Remove default margin */
+        padding: 0; /* Remove default padding */
       }
     </style>
 
@@ -36,19 +36,19 @@
 
         // Create a new map object and attach it to the 'map' div
         const map = new google.maps.Map(document.getElementById("map"), {
-          center: ellensburg,      // Map center
-          zoom: 14,                // Initial zoom level
+          center: ellensburg, // Map center
+          zoom: 14, // Initial zoom level
           restriction: {
             latLngBounds: ellensburgBounds, // Restrict map movement to this area
-            strictBounds: true
+            strictBounds: true,
           },
         });
 
         // Place a marker on the map at the center location
         new google.maps.Marker({
-          position: ellensburg,   // Marker location
-          map: map,               // Attach marker to the map
-          title: "Ellensburg, WA" // Tooltip text
+          position: ellensburg, // Marker location
+          map: map, // Attach marker to the map
+          title: "Ellensburg, WA", // Tooltip text
         });
       }
     </script>
@@ -62,7 +62,8 @@
   </head>
 
   <body>
-    <!-- The container that Google Maps will render into -->
+    <!-- The container that Google Maps will render into 
+     Push to git-->
     <div id="map"></div>
   </body>
 </html>
