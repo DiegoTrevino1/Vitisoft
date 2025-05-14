@@ -19,6 +19,7 @@ public class MapViewPane {
         webView = new WebView();
         webEngine = webView.getEngine();
 
+        // This is where the GItHub Pages map is loaded
         webEngine.load(mapUrl);
 
         // Debug: check load success or failure

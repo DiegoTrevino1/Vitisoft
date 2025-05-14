@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Ellensburg Clean Map</title>
+
+    <!-- Viewport settings to make the map responsive on different devices -->
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta charset="utf-8" />
+
+    <!-- 
+      CSS styling to ensure the map takes up the entire window. 
+      Both <html> and <body> are set to 100% height with no margin or padding.
+    -->
+    <style>
+      html,
+      body,
+      #map {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+
+    <!-- 
+      JavaScript function that initializes the map.
+      This will be called automatically when the API loads using the callback parameter.
+    -->
+    <script>
+      function initMap() {
+        // Define the geographic coordinates for Ellensburg, Washington
+        const ellensburg = { lat: 47.0002, lng: -120.531 };
+
+        // Set boundaries to prevent panning far outside the city limits
+        const ellensburgBounds = {
+          north: 47.05,
+          south: 46.95,
+          east: -120.48,
+          west: -120.58,
+        };
+
+        // Create a new Google Map instance in the 'map' div
+        const map = new google.maps.Map(document.getElementById("map"), {
+          // Set the map's initial center to Ellensburg
+          center: ellensburg,
+
+          // Set the default zoom level (higher means closer in)
+          zoom: 14,
+
+          // Restrict the map from being panned outside of the bounds
+          restriction: {
+            latLngBounds: ellensburgBounds,
+            strictBounds: true,
+          },
+
+          // Disable all default UI controls: zoom buttons, compass, search box, etc.
+          disableDefaultUI: true,
+
+          // Apply custom styling rules to hide visual clutter
+          styles: [
+            {
+              featureType: "poi", // Points of Interest like restaurants, schools
+              elementType: "labels",
+              stylers: [{ visibility: "off" }],
+            },
+            {
+              featureType: "transit", // Bus and train stations
+              elementType: "labels",
+              stylers: [{ visibility: "off" }],
+            },
+            {
+              featureType: "road", // Icons for turn arrows or road signs
+              elementType: "labels.icon",
+              stylers: [{ visibility: "off" }],
+            },
+          ],
+        });
+
+        // Add a map marker centered on Ellensburg with a tooltip
+        new google.maps.Marker({
+          position: ellensburg,
+          map: map,
+          title: "Ellensburg, WA", // Tooltip when hovered
+        });
+      }
+    </script>
+
+    <!-- 
+      Asynchronously load the Google Maps JavaScript API.
+      The 'callback=initMap' means initMap() will be executed once the API is ready.
+      Replace YOUR_API_KEY with your actual Google Maps API key.
+    -->
+    <script
+      async
+      defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjyFfDrIUfeGXJNJxG_YFIj2Oen-H90YQ&callback=initMap"
+    ></script>
+  </head>
+
+  <body>
+    <!-- 
+      This is the HTML container that the map will render inside.
+      It is styled to take up the entire window via CSS above.
+    -->
+    <div id="map"></div>
+  </body>
+</html>
