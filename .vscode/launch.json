@@ -3,7 +3,7 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Main",
+            "name": "Main", 
             "request": "launch",
             "mainClass": "Main",
             "projectName": "FirstJavaFXProject_6a5d97d0",
@@ -19,7 +19,7 @@
         {
             "type": "java",
             "name": "Current File",
-            "request": "launch",
+            "request": "launch", 
             "mainClass": "${file}"
         },
         {
