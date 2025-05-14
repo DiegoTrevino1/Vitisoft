@@ -26,7 +26,7 @@
         // Center of the map: Ellensburg, WA
         const ellensburg = { lat: 47.0002, lng: -120.531 };
 
-        // Optional: Define a rectangular boundary the user can't pan outside of
+        // Define a rectangular boundary the user can't pan outside of
         const ellensburgBounds = {
           north: 47.05,
           south: 46.95,
@@ -42,14 +42,39 @@
             latLngBounds: ellensburgBounds, // Restrict map movement to this area
             strictBounds: true,
           },
+
+          disableDefaultUI: true, // hides default controls
+          styles: [
+            {
+              featureType: "poi",
+              elementType: "labels",
+              stylers: [{ visibility: "off" }],
+            },
+            {
+              featureType: "transit",
+              elementType: "labels",
+              stylers: [{ visibility: "off" }],
+            },
+            {
+              featureType: "road",
+              elementType: "labels.icon",
+              stylers: [{ visibility: "off" }],
+            },
+          ],
         });
 
         // Place a marker on the map at the center location
         new google.maps.Marker({
-          position: ellensburg, // Marker location
-          map: map, // Attach marker to the map
-          title: "Ellensburg, WA", // Tooltip text
+          position: ellensburg,
+          map: map,
+          title: "Ellensburg, WA",
         });
+
+        //Fixing: Force map to redraw tiles after initial load in JavaFX WebView
+        setTimeout(() => {
+          google.maps.event.trigger(map, "resize");
+          map.setCenter(ellensburg); // Recenter after resize
+        }, 1000);
       }
     </script>
 
