@@ -26,11 +26,17 @@
       This will be called automatically when the API loads using the callback parameter.
     -->
     <script>
+      /**
+       * Initializes a customized Google Map centered on Ellensburg, WA,
+       * with restricted bounds and minimal UI. This version includes a workaround
+       * to force Google Maps to render correctly in JavaFX WebView by triggering
+       * a resize event after the DOM is fully loaded.
+       */
       function initMap() {
-        // Define the geographic coordinates for Ellensburg, Washington
+        // Define the initial center point of the map
         const ellensburg = { lat: 47.0002, lng: -120.531 };
 
-        // Set boundaries to prevent panning far outside the city limits
+        // Define map boundaries to restrict user panning outside this area
         const ellensburgBounds = {
           north: 47.05,
           south: 46.95,
@@ -38,48 +44,62 @@
           west: -120.58,
         };
 
-        // Create a new Google Map instance in the 'map' div
+        /**
+         * Create a new Google Map object and render it inside the 'map' div.
+         * - The map is centered on Ellensburg
+         * - Zoom level is set to 14
+         * - Map panning is restricted to the specified bounds
+         * - Default UI elements (e.g., zoom controls, search bar) are disabled
+         * - Custom styles hide POIs, transit labels, and road icons
+         */
         const map = new google.maps.Map(document.getElementById("map"), {
-          // Set the map's initial center to Ellensburg
           center: ellensburg,
-
-          // Set the default zoom level (higher means closer in)
           zoom: 14,
-
-          // Restrict the map from being panned outside of the bounds
           restriction: {
             latLngBounds: ellensburgBounds,
             strictBounds: true,
           },
-
-          // Disable all default UI controls: zoom buttons, compass, search box, etc.
           disableDefaultUI: true,
-
-          // Apply custom styling rules to hide visual clutter
           styles: [
             {
-              featureType: "poi", // Points of Interest like restaurants, schools
+              featureType: "poi", // Hide labels for points of interest
               elementType: "labels",
               stylers: [{ visibility: "off" }],
             },
             {
-              featureType: "transit", // Bus and train stations
+              featureType: "transit", // Hide labels for transit stops
               elementType: "labels",
               stylers: [{ visibility: "off" }],
             },
             {
-              featureType: "road", // Icons for turn arrows or road signs
+              featureType: "road", // Hide icon labels on roads (e.g., turn arrows)
               elementType: "labels.icon",
               stylers: [{ visibility: "off" }],
             },
           ],
         });
 
-        // Add a map marker centered on Ellensburg with a tooltip
+        /**
+         * Place a red map marker at the center of Ellensburg.
+         * This helps visually confirm the map is loaded at the correct location.
+         */
         new google.maps.Marker({
           position: ellensburg,
           map: map,
-          title: "Ellensburg, WA", // Tooltip when hovered
+          title: "Ellensburg, WA",
+        });
+
+        /**
+         * WORKAROUND: Force the map to redraw tiles after the DOM is ready.
+         * This fixes the "blank tile" issue seen when embedding Google Maps
+         * inside a JavaFX WebView. Triggering a resize event followed by a recenter
+         * allows Google Maps to render tiles correctly.
+         */
+        document.addEventListener("DOMContentLoaded", function () {
+          setTimeout(() => {
+            google.maps.event.trigger(map, "resize"); // Force redraw
+            map.setCenter(ellensburg); // Recenter after resize
+          }, 200); // Short delay ensures map div is fully painted
         });
       }
     </script>
