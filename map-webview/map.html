@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Ellensburg Map</title>
+
+    <!-- Sets the viewport to make the page responsive on mobile devices -->
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+
+    <!-- Sets the character encoding -->
+    <meta charset="utf-8" />
+
+    <!-- CSS styles to make the map fill the entire page -->
+    <style>
+      html,
+      body,
+      #map {
+        height: 100%;       /* Full height for map container */
+        margin: 0;          /* Remove default margin */
+        padding: 0;         /* Remove default padding */
+      }
+    </style>
+
+    <script>
+      // This function initializes the Google Map
+      function initMap() {
+        // Center of the map: Ellensburg, WA
+        const ellensburg = { lat: 47.0002, lng: -120.531 };
+
+        // Optional: Define a rectangular boundary the user can't pan outside of
+        const ellensburgBounds = {
+          north: 47.05,
+          south: 46.95,
+          east: -120.48,
+          west: -120.58,
+        };
+
+        // Create a new map object and attach it to the 'map' div
+        const map = new google.maps.Map(document.getElementById("map"), {
+          center: ellensburg,      // Map center
+          zoom: 14,                // Initial zoom level
+          restriction: {
+            latLngBounds: ellensburgBounds, // Restrict map movement to this area
+            strictBounds: true
+          },
+        });
+
+        // Place a marker on the map at the center location
+        new google.maps.Marker({
+          position: ellensburg,   // Marker location
+          map: map,               // Attach marker to the map
+          title: "Ellensburg, WA" // Tooltip text
+        });
+      }
+    </script>
+
+    <!-- Load Google Maps JavaScript API and call initMap() when it finishes loading -->
+    <script
+      async
+      defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCjyFfDrIUfeGXJNJxG_YFIj2Oen-H90YQ&callback=initMap"
+    ></script>
+  </head>
+
+  <body>
+    <!-- The container that Google Maps will render into -->
+    <div id="map"></div>
+  </body>
+</html>
