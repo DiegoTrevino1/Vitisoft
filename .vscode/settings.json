@@ -11,6 +11,8 @@
         "c:\\javafxsdk\\lib\\javafx.base.jar",
         "c:\\javafxsdk\\lib\\javafx.graphics.jar",
         "c:\\javafxsdk\\lib\\javafx.media.jar",
-        "c:\\javafxsdk\\lib\\javafx-swt.jar"
+        "c:\\javafxsdk\\lib\\javafx-swt.jar",
+        "/usr/lib/javafx-sdk-21.0.7/lib/*.jar",
+        "lib/**/*.jar"
     ]
 }
