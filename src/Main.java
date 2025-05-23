@@ -26,7 +26,7 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         // connect to the database
-        DatabaseManager.Connect();
+        DatabaseManager.connect();
         launch(args);
     }
 }
