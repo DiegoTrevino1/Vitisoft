@@ -8,7 +8,7 @@ USE expeditedEmergencyDB;
 
 CREATE TABLE users (
   userName varchar(20) NOT NULL,
-  userPasswordHash varchar NOT NULL,
+  userPasswordHash varchar(255) NOT NULL,
   userLastLogin datetime NOT NULL,
   userEmail varchar(50) NOT NULL,
   userFirstName varchar(50) NOT NULL,

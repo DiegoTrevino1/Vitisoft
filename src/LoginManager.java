@@ -26,7 +26,7 @@ public class LoginManager {
      * @param HashMap containing all accounts currently stored
      */
     public LoginManager (HashMap accounts) {
-        accounts = this.accounts;
+        this.accounts = accounts;
     }
 
     /*
