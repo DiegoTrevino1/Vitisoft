@@ -30,8 +30,8 @@ public class Account {
      * @param String password to be hashed then stored.
      */
     public Account (String username, String password) {
-        username = this.username;
-        passHash = hashPassword(password);
+        this.username = username;
+        this.passHash = hashPassword(password);
     }
 
     /*
