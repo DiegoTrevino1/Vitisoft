@@ -1,5 +1,4 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.*;
 import java.time.*;
 
 public class DatabaseManager {
@@ -24,6 +23,18 @@ public class DatabaseManager {
         }
     }
 
+    /**
+     * Run some tests to make sure it works
+     */
+    public static void test() {
+        Account user = new Account("deano", "1234");
+        insertUser(user.getUsername(), user.getPassword(), LocalDateTime.now(), "deano@dean.com", "Dean", "Yockey");
+        user = getUser("deano");
+        insertEmergency(user.getUsername(), LocalDateTime.now(), "", "FIRE!", "123 Fire Street", "fire", 10);
+        // need a simple way to get the auto-generated ID of that inserted emergency
+        insertEmergencyUpdate(1, LocalDateTime.now(), "MORE FIRE!");
+    }
+
     /*
     CREATE TABLE users (
     userName varchar(20) NOT NULL,
@@ -37,13 +48,45 @@ public class DatabaseManager {
     ) ENGINE=InnoDB;
     */
    public static void insertUser(String userName, String passwordHash, LocalDateTime lastLogin,
-        String email, String firstName, String lastName) {
-            // TODO
+            String email, String firstName, String lastName) {
+        try {
+            String query = String.format("""
+                INSERT INTO users 
+                VALUES
+                ("%s", "%s", "%s", "%s", "%s", "%s")
+                ;
+                """,
+            userName, passwordHash, lastLogin.toString(), email,
+            firstName, lastName
+            );
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(query);
+        }
+        catch(Exception e) {
+            System.out.println(e.toString());
+        }
+            
    }
 
    public static Account getUser(String userName) {
-        // TODO
-        return null;
+        
+        try {
+            String query = String.format("""
+                    SELECT *
+                    FROM users
+                    WHERE userName = "%s"
+                    ;
+                    """, userName);
+            Statement statement = connection.createStatement();
+            ResultSet result = statement.executeQuery(query);
+            result.next();
+            
+            return new Account(userName, result.getString("userPasswordHash"));
+        }
+        catch(Exception e) {
+            System.out.println(e.toString());
+            return null;
+        }
    }
 
 
@@ -65,20 +108,29 @@ public class DatabaseManager {
     ) ENGINE=InnoDB;
     */
 
-    public static void insertEmergency(int emergencyID, String userName, LocalDateTime receivedTime,
+    public static void insertEmergency(String userName, LocalDateTime receivedTime,
             String callerID, String emergencyDetails, String emergencyAddress, 
             String emergencyType, int priority) {
         
-        String query = String.format("""INSERT INTO emergencies 
-        VALUES
-        (%d, "%s", "%s", "%s", "%s", "%s", "%s", %d)
-        ;""",
-        emergencyID, userName, receivedTime.toString(), callerID, emergencyDetails,
-        emergencyAddress, emergencyType, priority
-        );
-        Statement statement = connection.createStatement();
-        statement.executeUpdate(query);
+        try {
+            String query = String.format("""
+                INSERT INTO emergencies 
+                VALUES
+                (NULL, "%s", "%s", "%s", "%s", "%s", "%s", %b, %d)
+                ;
+                """,
+            userName, receivedTime.toString(), callerID, emergencyDetails,
+            emergencyAddress, emergencyType, true, priority
+            );
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(query);
+        }
+        catch(Exception e) {
+            System.out.println(e.toString());
+        }
     }
+
+    // we need some kind of emergency object to return
 
     /*
     CREATE TABLE emergencyUpdate (
@@ -93,14 +145,23 @@ public class DatabaseManager {
      */
 
     public static void insertEmergencyUpdate(int emergencyID, LocalDateTime time, String description) {
-        String query = String.format("""INSERT INTO emergencyUpdate 
-        VALUES
-        (%d, "%s", "%s")
-        ;""",
-        emergencyID, time.toString(), description
-        );
-        Statement statement = connection.createStatement();
-        statement.executeUpdate(query);
+        try {
+            String query = String.format("""
+                INSERT INTO emergencyUpdate 
+                VALUES
+                (%d, "%s", "%s")
+            ;
+            """,
+            emergencyID, time.toString(), description
+            );
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(query);
+        }
+        catch(Exception e) {
+            System.out.println(e.toString());
+        }
     }
+
+    // we need some kind of emergencyUpdate object to return
 
 }

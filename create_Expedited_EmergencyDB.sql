@@ -24,7 +24,7 @@ INSERT INTO users VALUES ('bigBoss',123456,'2025-05-12 13:08:22','bigboss@vitiso
 --
 
 CREATE TABLE emergencies (
-  emergencyID int NOT NULL,
+  emergencyID int NOT NULL AUTO_INCREMENT,
   userName varchar(20) NOT NULL,
   receivedTime datetime NOT NULL,
   callerID char(10) DEFAULT NULL,

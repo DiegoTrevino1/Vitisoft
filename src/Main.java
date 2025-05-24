@@ -1,3 +1,4 @@
+import java.time.LocalDateTime;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
@@ -27,6 +28,7 @@ public class Main extends Application {
     public static void main(String[] args) {
         // connect to the database
         DatabaseManager.connect();
+        DatabaseManager.test();
         launch(args);
     }
 }
