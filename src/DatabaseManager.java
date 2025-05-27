@@ -108,9 +108,7 @@ public class DatabaseManager {
     ) ENGINE=InnoDB;
     */
 
-    public static void insertEmergency(String userName, LocalDateTime receivedTime,
-            String callerID, String emergencyDetails, String emergencyAddress, 
-            String emergencyType, int priority) {
+    public static void insertEmergency(Emergency emergency) {
         
         try {
             String query = String.format("""
@@ -119,8 +117,8 @@ public class DatabaseManager {
                 (NULL, "%s", "%s", "%s", "%s", "%s", "%s", %b, %d)
                 ;
                 """,
-            userName, receivedTime.toString(), callerID, emergencyDetails,
-            emergencyAddress, emergencyType, true, priority
+            emergency.userName, emergency.receivedTime.toString(), emergency.callerID, emergency.details,
+            emergency.address, emergency.type, emergency.isActive, emergency.priority
             );
             Statement statement = connection.createStatement();
             statement.executeUpdate(query);
@@ -144,7 +142,7 @@ public class DatabaseManager {
 
      */
 
-    public static void insertEmergencyUpdate(int emergencyID, LocalDateTime time, String description) {
+    public static void insertEmergencyUpdate(EmergencyUpdate emergencyUpdate) {
         try {
             String query = String.format("""
                 INSERT INTO emergencyUpdate 
@@ -152,7 +150,7 @@ public class DatabaseManager {
                 (%d, "%s", "%s")
             ;
             """,
-            emergencyID, time.toString(), description
+            emergencyUpdate.emergencyID, emergencyUpdate.time.toString(), emergencyUpdate.description
             );
             Statement statement = connection.createStatement();
             statement.executeUpdate(query);
