@@ -19,6 +19,9 @@ CONSTRAINT emergency_fk_user FOREIGN KEY (userName) REFERENCES users (userName)
 */
 
 public class Emergency {
+
+    public static int nextID = 1;
+
     public int id;
     public String userName;
     public LocalDateTime receivedTime;
@@ -29,9 +32,24 @@ public class Emergency {
     public boolean isActive;
     public int priority;
 
+    public Emergency(String userName, LocalDateTime receivedTime, 
+            String callerID, String details, String address, String type, boolean isActive, int priority) {
+        this.id = nextID;
+        nextID ++;
+        this.userName = userName;
+        this.receivedTime = receivedTime;
+        this.callerID = callerID;
+        this.details = details;
+        this.address = address;
+        this.type = type;
+        this.isActive = isActive;
+        this.priority = priority;
+    }
+
     public Emergency(int id, String userName, LocalDateTime receivedTime, 
             String callerID, String details, String address, String type, boolean isActive, int priority) {
         this.id = id;
+        nextID ++;
         this.userName = userName;
         this.receivedTime = receivedTime;
         this.callerID = callerID;
@@ -55,7 +73,7 @@ CONSTRAINT update_fk_emergency FOREIGN KEY (emergencyID) REFERENCES emergencies 
 
     */
 
-public class EmergencyUpdate {
+class EmergencyUpdate {
     public int emergencyID;
     public LocalDateTime time;
     public String description;
@@ -65,3 +83,4 @@ public class EmergencyUpdate {
         this.time = time;
         this.description = description;
     }
+}

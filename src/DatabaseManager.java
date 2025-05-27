@@ -1,6 +1,7 @@
 import java.sql.*;
 import java.time.*;
-import.java.util.*;
+import java.util.ArrayList;
+import java.time.format.DateTimeFormatter;
 
 public class DatabaseManager {
 
@@ -31,9 +32,12 @@ public class DatabaseManager {
         Account user = new Account("deano", "1234");
         insertUser(user.getUsername(), user.getPassword(), LocalDateTime.now(), "deano@dean.com", "Dean", "Yockey");
         user = getUser("deano");
-        insertEmergency(user.getUsername(), LocalDateTime.now(), "", "FIRE!", "123 Fire Street", "fire", 10);
+        Emergency emergency = new Emergency(user.getUsername(), LocalDateTime.now(), "", "FIRE!", "123 Fire Street", "fire", true, 10);
+        insertEmergency(emergency);
+
+        EmergencyUpdate emergencyUpdate = new EmergencyUpdate(emergency.id, LocalDateTime.now(), "More fire!");
         // need a simple way to get the auto-generated ID of that inserted emergency
-        insertEmergencyUpdate(1, LocalDateTime.now(), "MORE FIRE!");
+        insertEmergencyUpdate(emergencyUpdate);
     }
 
     /*
@@ -115,10 +119,10 @@ public class DatabaseManager {
             String query = String.format("""
                 INSERT INTO emergencies 
                 VALUES
-                (NULL, "%s", "%s", "%s", "%s", "%s", "%s", %b, %d)
+                (%d, "%s", "%s", "%s", "%s", "%s", "%s", %b, %d)
                 ;
                 """,
-            emergency.userName, emergency.receivedTime.toString(), emergency.callerID, emergency.details,
+            emergency.id, emergency.userName, emergency.receivedTime.toString(), emergency.callerID, emergency.details,
             emergency.address, emergency.type, emergency.isActive, emergency.priority
             );
             Statement statement = connection.createStatement();
