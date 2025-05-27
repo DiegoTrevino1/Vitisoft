@@ -1,5 +1,6 @@
 import java.sql.*;
 import java.time.*;
+import.java.util.*;
 
 public class DatabaseManager {
 
@@ -128,7 +129,33 @@ public class DatabaseManager {
         }
     }
 
-    // we need some kind of emergency object to return
+    // TODO: getEmergency
+    public static Emergency getEmergency(int emergencyID) {
+        // TODO
+        try {
+            String query = String.format("""
+                    SELECT *
+                    FROM emergencies
+                    WHERE emergencyID = %d
+                    ;
+                    """, emergencyID);
+            Statement statement = connection.createStatement();
+            ResultSet result = statement.executeQuery(query);
+            result.next();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss");
+            return new Emergency(emergencyID, result.getString("userName"),
+                LocalDateTime.parse(result.getString("receivedTime") , formatter),
+                result.getString("callerID"), result.getString("emergencyDetails"),
+                result.getString("emergencyAddress"), result.getString("emergencyType"),
+                result.getBoolean("isActiveEmergency"), result.getInt("priority")
+                );
+        }
+        catch(Exception e) {
+            System.out.println(e.toString());
+            return null;
+        }
+        return null;
+    }
 
     /*
     CREATE TABLE emergencyUpdate (
@@ -160,6 +187,10 @@ public class DatabaseManager {
         }
     }
 
-    // we need some kind of emergencyUpdate object to return
+    // TODO: getEmergencyUpdate
+    public static ArrayList<EmergencyUpdate> getEmergencyUpdates(int emergencyID) {
+        // TODO
+        return null;
+    }
 
 }
