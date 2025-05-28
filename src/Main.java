@@ -26,9 +26,17 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
+        // we need the manager as an object that can be passed to other objects
+        // to let us use its methods
+        DatabaseManager db = new DatabaseManager();
         // connect to the database
-        DatabaseManager.connect();
-        DatabaseManager.test();
+        db.connect();
+        db.test();
+
+        // created a LoginManager and passed the database to it.
+        // to use the LoginManager methods, use "lm.logIn(username, pass);"
+        // for example.
+        LoginManager lm = new LoginManager(db);
         launch(args);
     }
 }
