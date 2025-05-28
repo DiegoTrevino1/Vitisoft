@@ -1,8 +1,8 @@
 /*
  * @author Ian Seymour
- * @date 5/18/2025
+ * @date 5/27/2025
  * @file LoginManager.java
- * @version 0.1
+ * @version 0.2
  * 
  * LoginManager class stores a hash map of all accounts currently
  * created. The class has methods to login, print the stored accounts,
@@ -15,8 +15,8 @@ import java.util.Map;
 
 public class LoginManager {
 
-    // All stored accounts
-    HashMap<String, Account> accounts;
+    // Database connection necessary to query accounts
+    DatabaseManager db;
 
     // Currently logged in account
     String currentAccount = null;
@@ -25,8 +25,13 @@ public class LoginManager {
      * @description constructor for LoginManager
      * @param HashMap containing all accounts currently stored
      */
-    public LoginManager (HashMap accounts) {
-        this.accounts = accounts;
+    public LoginManager (DatabaseManager db) {
+        // check the connection
+        if (db == null) {
+            System.out.println("ERROR: DatabaseManager is null.");
+        }
+        
+        this.db = db;
     }
 
     /*
@@ -38,16 +43,20 @@ public class LoginManager {
      */
     public boolean logIn(String username, String password) {
 
+        db.connect();
+
         // check if username is valid
-        if (accounts.containsKey(username)) {
+        if (db.getUser(username) != null) {
 
             // check if password is valid
-            if (accounts.get(username).checkPassword(accounts.get(username.getPassword()))) {
+            if (checkPassword(db.getUser())) {
                 
                 currentAccount = username; // set currently logged in account
 
                 // update account's last login date/time
-                accounts.get(username).setLastLogin(ZonedDateTime.now());
+                String logTime = ZonedDateTime.now();
+
+                db.updateLastLogin(username, logTime);
 
                 System.out.println(username + " logged in successfully.");
 
@@ -65,9 +74,8 @@ public class LoginManager {
 
     /*
      * @description method to log out the current user.
-     * @param String username to log out.
      */
-    public logOut(String username) {
+    public logOut() {
         currentAccount = null;
     }
 
@@ -76,7 +84,12 @@ public class LoginManager {
      * @param Account to be added
      */
     public addAccount (Account account) {
-        accounts.put(account.getUsername(), account);
+
+        db.connect();
+
+        String lastLogin = ZonedDateTime.now();
+
+        db.insertUser(account.getUsername(), account.getPassword(), lastLogin, account.getEmail(), account.getFirstName(), account.getLastName());
     }
 
     /*
@@ -84,7 +97,9 @@ public class LoginManager {
      * @param String username to be removed from accounts
      */
     public removeAccount (String username) {
-        accounts.remove(username);
+        db.connect();
+
+        db.removeAccount(username);
     }
 
     public String getCurrentAccount () {
@@ -93,10 +108,11 @@ public class LoginManager {
 
     /*
      * @description method to print all currently stored accounts
-     */
+     *
     public printAccounts () {
         for (String key : accounts.keySet()) {
             System.out.println(key);
         }
     }
+    */
 }
