@@ -93,7 +93,7 @@ public class Account {
      * @description setter for last login time
      * @param String new login time
      */
-    public setLastLogin (String loginTime) {
+    public void setLastLogin (String loginTime) {
         lastLogin = loginTime;
     }
 
@@ -106,7 +106,7 @@ public class Account {
      */
     private String hashPassword (String password) {
         try {
-            byte[] salt = getSalt; // get a random salt
+            byte[] salt = getSalt(); // get a random salt
             String hashedPass = hash(password, salt); // store hashed pass
 
             // return encrypted password
@@ -127,7 +127,7 @@ public class Account {
         // use SecureRandom
         SecureRandom rand = SecureRandom.getInstanceStrong();
         byte[] salt = new byte[16]; // create array of bytes
-        random.nextBytes(salt); // fill away with random bytes
+        rand.nextBytes(salt); // fill away with random bytes
         return salt; // return the filled salt
     }
 
@@ -162,7 +162,7 @@ public class Account {
             String[] passTokens = passStored.split("\\$");
 
             // get salt
-            byte salt = Base64.getDecoder().decode(passTokens[0]);
+            byte[] salt = Base64.getDecoder().decode(passTokens[0]);
             String storedPass = passTokens[1];
 
             // hash the input password to check against the one stored
