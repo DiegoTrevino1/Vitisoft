@@ -197,4 +197,30 @@ public class DatabaseManager {
         return null;
     }
 
+    /*
+    * Added a new method to update the login time:
+    */
+    public void updateLastLogin(String username, String newDtg) {
+
+    String sql = "UPDATE users SET lastLogin = ? WHERE userName = ?";
+
+    try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        preparedStatement.setString(1, newDtg); // Set the new login time
+        preparedStatement.setString(2, username); // Set the username
+
+        int rowsAffected = preparedStatement.executeUpdate();
+        if (rowsAffected > 0) {
+            System.out.println("DatabaseManager: Last login time updated for user '" + username + "' to '" + newDtg + "'.");
+            return true;
+        } else {
+            System.out.println("DatabaseManager: No user found with username '" + username + "' to update last login time.");
+            return false;
+        }
+    } catch (SQLException e) {
+        System.err.println("DatabaseManager: Error updating last login time: " + e.getMessage());
+        return false;
+    }
+}
+
+
 }
