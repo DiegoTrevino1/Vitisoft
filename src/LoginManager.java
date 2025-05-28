@@ -49,12 +49,12 @@ public class LoginManager {
         if (db.getUser(username) != null) {
 
             // check if password is valid
-            if (checkPassword(username, db.getUser())) {
+            if (checkPassword(db.getUser())) {
                 
                 currentAccount = username; // set currently logged in account
 
                 // update account's last login date/time
-                String logTime = ZonedDateTime.now();
+                String logTime = ZonedDateTime.now().toString();
 
                 db.updateLastLogin(username, logTime);
 
@@ -75,7 +75,7 @@ public class LoginManager {
     /*
      * @description method to log out the current user.
      */
-    public logOut() {
+    public void logOut() {
         currentAccount = null;
     }
 
@@ -83,11 +83,11 @@ public class LoginManager {
      * @description method to add an account
      * @param Account to be added
      */
-    public addAccount (Account account) {
+    public void addAccount (Account account) {
 
         db.connect();
 
-        String lastLogin = ZonedDateTime.now();
+        String lastLogin = ZonedDateTime.now().toString();
 
         db.insertUser(account.getUsername(), account.getPassword(), lastLogin, account.getEmail(), account.getFirstName(), account.getLastName());
     }
@@ -96,7 +96,7 @@ public class LoginManager {
      * @description method to remove an account
      * @param String username to be removed from accounts
      */
-    public removeAccount (String username) {
+    public void removeAccount (String username) {
         db.connect();
 
         db.removeAccount(username);
