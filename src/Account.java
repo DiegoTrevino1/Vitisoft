@@ -1,5 +1,5 @@
 /*
- * @author Ian Seymour
+ * @author Ian Seymour   
  * @date 5/18/2025
  * @file Account.java
  * @version 0.1
