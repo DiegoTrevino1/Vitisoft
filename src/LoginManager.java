@@ -12,6 +12,10 @@
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Base64;
 
 public class LoginManager {
 
@@ -72,6 +76,7 @@ public class LoginManager {
         }
     }
 
+
     /*
      * @description method to log out the current user.
      */
@@ -104,6 +109,36 @@ public class LoginManager {
 
     public String getCurrentAccount () {
         return currentAccount;
+    }
+
+    /*
+     * @description checkPassword is a method to take password entered by
+     * the user and check it against the stored password in its hash form
+     * @param String password to be checked
+     * @param String pasword stored as a hash
+     * @return boolean indicating if the passwords are the same
+     */
+    public boolean checkPassword(String passCheck, String passStored) {
+        try {
+            // splits hashed password into the salt and the password
+            String[] passTokens = passStored.split("\\$");
+
+            // get salt
+            byte[] salt = Base64.getDecoder().decode(passTokens[0]);
+            String storedPass = passTokens[1];
+
+            // hash the input password to check against the one stored
+            String checkHash = hash(passCheck, salt);
+
+            // compare the two hashed passwords and verify they are the same
+            // return the boolean for their equality
+            return storedPass.equals(checkHash);
+
+       } catch (NoSuchAlgorithmException e) {
+            System.out.println("ERROR : Hash algorithm failed.");
+            e.printStackTrace();
+            return false;
+       }
     }
 
     /*
