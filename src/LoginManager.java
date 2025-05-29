@@ -53,7 +53,7 @@ public class LoginManager {
         if (db.getUser(username) != null) {
 
             // check if password is valid
-            if (checkPassword(db.getUser())) {
+            if (checkPassword(password, db.getUser())) {
                 
                 currentAccount = username; // set currently logged in account
 
