@@ -17,7 +17,7 @@ public class Call {
     private String endTime;
     private String callDescription;
     private String callLocation;
-    private LinkedList<Call> callLog;
+    private String date;
     private LinkedList<Vehicle> assignedVehicles;
 
     /**
@@ -28,7 +28,7 @@ public class Call {
      * @param location
      * @param username
      */
-    public Call(String time, String type, String description, String location, String username, int priority, int callNum) {
+    public Call(String time, String type, String description, String location, String username, int priority, int callNum, String date) {
         this.startTime = time;
         this.callType = type;
         this.callDescription = description;
@@ -36,7 +36,7 @@ public class Call {
         this.creator = username;
         this.priority = priority;
         this.callNum = callNum;
-
+        this.date = date;
     }
 
     /**
@@ -82,45 +82,93 @@ public class Call {
         }
     }
 
+    /**
+     * Getter method for the callLocation
+     * @return callLocation
+     */
     public String getLocation() {
         return callLocation;
     }
 
+    /**
+     * Getter method for the call description
+     * @return callDescription
+     */
     public String getDescription() {
         return callDescription;
     }
 
+    /**
+     * Getter method for the start time of the call
+     * @return startTime
+     */
     public String getStart() {
         return startTime;
     }
 
-    public String getCreateor() {
+    /**
+     * Getter method for the creator of the call
+     * @return creator
+     */
+    public String getCreator() {
         return creator;
     }
 
+    /**
+     * This method closes the call and sets the endTime to the current time while taking in the current time
+     * @param time
+     */
     public void closeCall(String time) {
         callDescription = callDescription +"\n ["+time+"]: Call closed";
         this.endTime = time;
     }
 
+    /**
+     * This is a getter method for the endTime
+     * @return endTime
+     */
     public String getEnd() {
         return endTime;
     }
 
+    /**
+     * This is a getter method for the priority on a call
+     * @return priority
+     */
     public int getPriority() {
         return priority;
     }
 
+    /**
+     * This is a getter method for the callType
+     * @return callType
+     */
     public String getType() {
         return callType;
     }
 
+    /**
+     * This is a getter method for the callNum
+     * @return callNum
+     */
     public int getCallNum() {
         return callNum;
     }
 
+    /**
+     * This is a getter method for the startTime
+     * @return startTime
+     */
     public String getTime() {
         return startTime;
+    }
+
+    /**
+     * A getter method for the date
+     * @return date
+     */
+    public String getDate() {
+        return date;
     }
 
     /**

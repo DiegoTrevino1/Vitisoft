@@ -5,7 +5,7 @@
  * This is a file to story the history of calls
  */
 
- import java.util.*;
+import java.util.*;
 public class History {
     
     //declaring variables
@@ -28,7 +28,7 @@ public class History {
     }
 
     /**
-     * This prints all of the triages that are in the hashmap
+     * This prints all of the calls that are in the hashmap
      */
     public void printHistory() {
         for(int i=0; i<history.size();i++) {
@@ -41,9 +41,9 @@ public class History {
      * @param date
      * @return Triage
      */
-    public Call findDay(String date) {
+    public Call findDay(String date, String time) {
         for(int i=0;i<history.size();i++) {
-            if(history.get(i).getTime().substring(0,10).equals(date)) {
+            if(history.get(i).getTime().equals(time) && history.get(i).getDate().equals(date)) {
                 return history.get(i);
             }
         }
