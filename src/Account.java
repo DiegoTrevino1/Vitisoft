@@ -1,12 +1,13 @@
 /*
- * @author Ian Seymour   
- * @date 5/18/2025
+ * @author Ian Seymour
+ * @date 5/27/2025
  * @file Account.java
- * @version 0.1
+ * @version 0.2
  * 
  * Account class that stores a username and password. The password is stored
  * in a hashed form using SHA256. There are methods to generate the hashed
- * password as well as getters for the username and password.
+ * password as well as getters for the username and password. The last login
+ * DTG can be set and retrived as well.
  */
 
 import java.security.MessageDigest;
@@ -20,6 +21,9 @@ public class Account {
     private String username;
     private String passHash; // using a SHA256 hash
     private String lastLogin; // DTG of the last login
+    private String email;
+    private String firstName;
+    private String lastName;
 
     /*
      * @description Account constructor takes a username String and
@@ -29,9 +33,12 @@ public class Account {
      * accounts.
      * @param String password to be hashed then stored.
      */
-    public Account (String username, String password) {
-        username = this.username;
+    public Account (String username, String password, String email, String firstName, String lastName) {
+        this.username = username;
         passHash = hashPassword(password);
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     /*
@@ -59,10 +66,34 @@ public class Account {
     }
 
     /*
+     * @description getter for email
+     * @return String email
+     */
+    public String getEmail () {
+        return email;
+    }
+
+    /*
+     * @description getter for first name
+     * @return String first name
+     */
+    public String getFirstName () {
+        return firstName;
+    }
+
+    /*
+     * @description getter for last name
+     * @return String last name
+     */
+    public String getLastName () {
+        return lastName;
+    }
+
+    /*
      * @description setter for last login time
      * @param String new login time
      */
-    public setLastLogin (String loginTime) {
+    public void setLastLogin (String loginTime) {
         lastLogin = loginTime;
     }
 
@@ -75,7 +106,7 @@ public class Account {
      */
     private String hashPassword (String password) {
         try {
-            byte[] salt = getSalt; // get a random salt
+            byte[] salt = getSalt(); // get a random salt
             String hashedPass = hash(password, salt); // store hashed pass
 
             // return encrypted password
@@ -96,7 +127,7 @@ public class Account {
         // use SecureRandom
         SecureRandom rand = SecureRandom.getInstanceStrong();
         byte[] salt = new byte[16]; // create array of bytes
-        random.nextBytes(salt); // fill away with random bytes
+        rand.nextBytes(salt); // fill away with random bytes
         return salt; // return the filled salt
     }
 
@@ -131,7 +162,7 @@ public class Account {
             String[] passTokens = passStored.split("\\$");
 
             // get salt
-            byte salt = Base64.getDecoder().decode(passTokens[0]);
+            byte[] salt = Base64.getDecoder().decode(passTokens[0]);
             String storedPass = passTokens[1];
 
             // hash the input password to check against the one stored

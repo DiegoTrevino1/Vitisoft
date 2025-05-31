@@ -1,9 +1,10 @@
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 
 /**
  *@Author Ian Cunningham
  *@Date 5/27/2025
- *@File Call.java
+ *@File Call.java version 0.2
  * This is the call file to make calls
  */  
 public class Call {
@@ -19,6 +20,7 @@ public class Call {
     private String callLocation;
     private String date;
     private LinkedList<Vehicle> assignedVehicles;
+    DatabaseManager db;
 
     /**
      * This is the constructor for a Call
@@ -29,6 +31,7 @@ public class Call {
      * @param username
      */
     public Call(String time, String type, String description, String location, String username, int priority, int callNum, String date) {
+        db.connect();
         this.startTime = time;
         this.callType = type;
         this.callDescription = description;
@@ -37,22 +40,29 @@ public class Call {
         this.priority = priority;
         this.callNum = callNum;
         this.date = date;
+        Emergency emergency = new Emergency(username, null, location, username, date, type, true, priority);
+        db.insertEmergency(emergency);
+
     }
 
     /**
-     * This is to add callnotes to a call
+     * This is to add callnotes to a call, taking in the 'item' as the notes.
      * @param item
      * @param username
      * @param time
      */
-    public void addLog(String item, String username, String time) {
-        callDescription = callDescription + "\n["+time+"] "+username+": "+item;
+    public void addLog(String item, String username) {
+        LocalDateTime now = LocalDateTime.now();
+        callDescription = callDescription + "\n["+now+"] "+username+": "+item;
+        EmergencyUpdate update = new EmergencyUpdate(callNum, now, callDescription);
+        db.insertEmergencyUpdate(update);
     }
 
     /**
      * This is to print all of the info about a call
      */
     public void printLog() {
+
         System.out.println(callDescription);
     }
 
@@ -62,9 +72,13 @@ public class Call {
      * @param vehicle
      * @param time
      */
-    public void addVehicle(Vehicle vehicle, String time) {
+    public void addVehicle(Vehicle vehicle) {
+        LocalDateTime now = LocalDateTime.now();
         assignedVehicles.add(vehicle);
-        callDescription = callDescription + "\n["+time+"] Dispatched "+vehicle.getType()+": "+vehicle.getBumper();
+        callDescription = callDescription + "\n["+now+"] Dispatched "+vehicle.getType()+": "+vehicle.getBumper();
+        EmergencyUpdate update = new EmergencyUpdate(callNum, now, callDescription);
+        db.insertEmergencyUpdate(update);
+
     }
 
     /**
@@ -73,11 +87,14 @@ public class Call {
      * @param bumperNumber
      * @param time
      */
-    public void removeVehicle(String bumperNumber, String time) {
+    public void removeVehicle(String bumperNumber) {
+        LocalDateTime now = LocalDateTime.now();
         for(int i=0;i<assignedVehicles.size();i++) {
             if(assignedVehicles.get(i).getBumper().equals(bumperNumber)) {
                 assignedVehicles.remove(i);
-                callDescription = callDescription + "\n["+time+"] Cleared: " + bumperNumber;
+                callDescription = callDescription + "\n["+now+"] Cleared: " + bumperNumber;
+                EmergencyUpdate update = new EmergencyUpdate(callNum, now, callDescription);
+                db.insertEmergencyUpdate(update);
             }
         }
     }

@@ -11,6 +11,8 @@ public class CallLog {
     //declaring variables
     private int numCalls;
     private String date;
+    
+    //this PriorityQueue uses the priority value from the call object to order the calls
     PriorityQueue <Call> callQueue = new PriorityQueue<>();
 
     /**
@@ -31,7 +33,7 @@ public class CallLog {
     }
 
     /**
-     * Removes a call from the callQueue
+     * Removes a call from the callQueue and adds it to the history
      * @param call
      */
     public void removeCall(Call call, String time) {
@@ -64,7 +66,7 @@ public class CallLog {
     }
 
     /**
-     * Ends the current date
+     * Ends the current date by setting it to null
      */
     public void endDate() {
         date = null;

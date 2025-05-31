@@ -3,6 +3,8 @@
  * @Date 5/27/2025
  * @File History.java
  * This is a file to story the history of calls
+ * 
+ * CURRENTLY THIS IS NOT CONNECTED WITH THE DATABASE
  */
 
 import java.util.*;
