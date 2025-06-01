@@ -1,0 +1,38 @@
+LoginManager
+
+LoginManager class has methods to manage logging in, out, account creation or deletion.
+
+To use, be sure to initialize a LoginManager object, which must be passed a database manager object as a parameter for its constructor to allow for database integration.
+
+Once initialized, the LoginManager’s methods can be used.
+
+LoginManager (DatabaseManager db)
+Initialize a login manager by passing it a database manager as parameter.
+
+logIn (String username, String password)
+The password being in plain text (unencrypted). This uses this info to check against the hashed password and username stored in the database and if successful, logs the user in.
+
+logOut ()
+Logs out current account.
+
+addAccount (Account account)
+Provide an account object as a parameter to add it to the database. Accounts themselves are created using the Account class constructor. To see the full process of creating an account
+and adding it to the database, see the Account class.
+
+removeAccount (String username)
+Removes account by using username as the key for querying the database.
+
+getCurrentAccount ()
+Returns the currently logged in account’s username.
+
+Also includes a checkPassword helper method to allow login.
+
+Account
+
+Account classes are objects that store usernames, passwords (in the form of SHA256 hashes), last login time, email, first name, and last name of user.
+
+Account (String username, String password, String email, String firstName, String lastName)
+To initialize, pass the above parameters as input by the user (with the password being plain text). The constructor will store the data, then hash the password and store it as well. 
+To create an account, get user input, then initialize it, then pass it to the LoginManager’s add account method.
+
+There are more methods, to include getters for every field, but they are not necessary for most uses. The main function of the Account class is the constructor.

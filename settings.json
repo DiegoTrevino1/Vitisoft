@@ -1,5 +1,17 @@
 {
   "java.project.referencedLibraries": [
     "C:/Users/Diego/OneDrive/Desktop/javafx-sdk-21/lib/*.jar"
+  ],
+  "sqltools.connections": [
+    {
+      "name": "VitisoftDB",
+      "driver": "MySQL",
+      "server": "localhost",
+      "port": 3306,
+      "username": "root",
+      "password": "VitisoftDev2025!",
+      "database": "",
+      "connectionTimeout": 10000
+    }
   ]
 }

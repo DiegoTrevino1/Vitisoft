@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expedited Emergency - Login</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", sans-serif;
+        background-color: #e2e3e9;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      .container {
+        text-align: center;
+      }
+      .form-box {
+        background-color: white;
+        padding: 40px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        width: 300px;
+        margin: 20px auto;
+      }
+      h1 {
+        font-size: 24px;
+        margin-bottom: 0;
+      }
+      h2 {
+        font-size: 16px;
+        color: #555;
+        margin-bottom: 20px;
+      }
+      input {
+        display: block;
+        width: 275px;
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+      }
+      button {
+        background-color: #3b3bf0;
+        color: white;
+        border: none;
+        padding: 10px;
+        width: 100%;
+        border-radius: 3px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #2c2ccc;
+        color: white;
+      }
+      .link-button {
+        background: none;
+        border: none;
+        color: #3b3bf0;
+        text-decoration: underline;
+        cursor: pointer;
+        font-size: 14px;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="form-box" id="loginBox">
+        <h1>Expedited Emergency</h1>
+        <h2>911 Dispatch System</h2>
+        <input type="text" id="loginUser" placeholder="User ID" />
+        <input type="password" id="loginPass" placeholder="Password" />
+        <button onclick="login()">Sign In</button>
+        <button
+          class="link-button"
+          onclick="alert('Password recovery not implemented')"
+        >
+          Forgot password?
+        </button>
+        <button class="link-button" onclick="toggleForms('signup')">
+          Sign Up
+        </button>
+      </div>
+
+      <div class="form-box" id="signupBox" style="display: none">
+        <h1>Sign Up</h1>
+        <input type="text" id="signupUser" placeholder="Enter ID:" />
+        <input type="password" id="signupPass" placeholder="Enter Password:" />
+        <input type="text" id="accessCode" placeholder="Enter Code:" />
+        <button onclick="signup()">Register</button>
+        <button class="link-button" onclick="toggleForms('login')">
+          Back to Login
+        </button>
+      </div>
+    </div>
+
+    <script>
+      function toggleForms(form) {
+        document.getElementById("loginBox").style.display =
+          form === "login" ? "block" : "none";
+        document.getElementById("signupBox").style.display =
+          form === "signup" ? "block" : "none";
+      }
+
+      function login() {
+        const user = document.getElementById("loginUser").value;
+        const pass = document.getElementById("loginPass").value;
+
+        fetch("http://localhost:8080/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username: user, password: pass }),
+        })
+          .then((res) => res.text())
+          .then((msg) => alert(msg))
+          .catch((err) => alert("Error: " + err));
+      }
+
+      function signup() {
+        const user = document.getElementById("signupUser").value;
+        const pass = document.getElementById("signupPass").value;
+        const code = document.getElementById("accessCode").value;
+
+        // Access code check example
+        if (code !== "EMERGENCY123") {
+          alert("Invalid access code");
+          return;
+        }
+
+        fetch("http://localhost:8080/api/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username: user, password: pass }),
+        })
+          .then((res) => res.text())
+          .then((msg) => alert(msg))
+          .catch((err) => alert("Error: " + err));
+      }
+    </script>
+  </body>
+</html>
