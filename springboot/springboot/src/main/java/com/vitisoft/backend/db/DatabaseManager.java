@@ -57,6 +57,8 @@ public class DatabaseManager {
 
             EmergencyUpdate emergencyUpdate = new EmergencyUpdate(emergency.id, LocalDateTime.now(), "More fire!");
             insertEmergencyUpdate(emergencyUpdate);
+
+            ArrayList<EmergencyUpdate> list = getEmergencyUpdates(1);
         }
     }
 
@@ -225,7 +227,7 @@ public class DatabaseManager {
     }
 
     /**
-     * Main method. I don't know why this is here if if it's ever run.
+     * Main method. Just for testing I guess.
      * @param args Command line arguments. Never used
      */
     public static void main(String[] args) {
