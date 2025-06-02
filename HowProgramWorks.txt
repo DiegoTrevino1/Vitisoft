@@ -1,0 +1,8 @@
+
+You enter the username and password (from the MySQL database) into your login form.
+
+The frontend sent that data as JSON to your backend (http://localhost:8080/api/login).
+
+Your Spring Boot backend verified the credentials using LoginManager and DatabaseManager.
+
+It returned "Login successful" — and your frontend displayed it via an alert().
