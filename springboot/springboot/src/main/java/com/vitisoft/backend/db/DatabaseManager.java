@@ -8,14 +8,32 @@ import com.vitisoft.backend.model.Emergency;
 import com.vitisoft.backend.model.EmergencyUpdate;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Class for managing database input and output
+ */
 public class DatabaseManager {
 
+    /**
+     * The url to find the database (local MySQL database)
+     */
     public static String dburl = "jdbc:mysql://localhost:3306/expeditedEmergencyDB";
+    /**
+     * Username for connecting to the database
+     */
     public static String dbUserName = "bigBoss";
+    /**
+     * Password for connecting to the database
+     */
     public static String dbPassword = "123456";
 
+    /**
+     * The connection to the database
+     */
     public static Connection connection = null;
 
+    /**
+     * Method for initializing the database connection
+     */
     public static void connect() {
         try {
             connection = DriverManager.getConnection(dburl, dbUserName, dbPassword);
@@ -25,13 +43,16 @@ public class DatabaseManager {
         }
     }
 
+    /**
+     * Method for testing database functionality
+     */
     public static void test() {
         Account user = new Account("deano", "123456", "deano@dean.com", "Dean", "Yockey");
         insertUser(user.getUsername(), user.getPassword(), user.getEmail(), user.getFirstName(), user.getLastName());
         user = getUser("deano");
         if (user != null) {
-            Emergency emergency = new Emergency(user.getUsername(), LocalDateTime.now(), "", "FIRE!", "123 Fire Street",
-                    "fire", true, 10);
+            Emergency emergency = new Emergency(user.getUsername(), LocalDateTime.now(), "", "Test!", "123 Test Street",
+                    "test", true, 11);
             insertEmergency(emergency);
 
             EmergencyUpdate emergencyUpdate = new EmergencyUpdate(emergency.id, LocalDateTime.now(), "More fire!");
@@ -39,6 +60,14 @@ public class DatabaseManager {
         }
     }
 
+    /**
+     * Method for inserting a new user into the database
+     * @param userName The user's name
+     * @param passwordHash The hash of the user's password
+     * @param email The user's email address
+     * @param firstName The user's first name
+     * @param lastName The user's last name
+     */
     public static void insertUser(String userName, String passwordHash, String email, String firstName,
             String lastName) {
         try {
@@ -55,6 +84,11 @@ public class DatabaseManager {
         }
     }
 
+    /**
+     * A method for generating an Account object from data in the database
+     * @param userName The user's unique username
+     * @return An Account object
+     */
     public static Account getUser(String userName) {
         try {
             String query = "SELECT * FROM users WHERE userName = ?";
@@ -77,6 +111,10 @@ public class DatabaseManager {
         }
     }
 
+    /**
+     * Insert's a new emergency into the database
+     * @param emergency The Emergency object
+     */
     public static void insertEmergency(Emergency emergency) {
         try {
             String query = "INSERT INTO emergencies (userName, receivedTime, callerID, emergencyDetails, emergencyAddress, emergencyType, isActiveEmergency, priority) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
@@ -99,6 +137,11 @@ public class DatabaseManager {
         }
     }
 
+    /**
+     * Method for retrieving an emergency from the database
+     * @param emergencyID The emergency's unique ID
+     * @return An Emergency object
+     */
     public static Emergency getEmergency(int emergencyID) {
         try {
             String query = "SELECT * FROM emergencies WHERE emergencyID = ?";
@@ -121,6 +164,10 @@ public class DatabaseManager {
         }
     }
 
+    /**
+     * Insert's an emergency update into the database
+     * @param emergencyUpdate The EmergencyUpdate object
+     */
     public static void insertEmergencyUpdate(EmergencyUpdate emergencyUpdate) {
         try {
             String query = "INSERT INTO emergencyUpdate (emergencyID, time, description) VALUES (?, ?, ?)";
@@ -134,10 +181,36 @@ public class DatabaseManager {
         }
     }
 
+    /**
+     * Gets all emergency updates for the specified emergency
+     * @param emergencyID The emergency's unique ID
+     * @return An ArrayList of emergency updates for the specified emergency
+     */
     public static ArrayList<EmergencyUpdate> getEmergencyUpdates(int emergencyID) {
-        return null; // placeholder
+        ArrayList<EmergencyUpdate> list = new ArrayList<>();
+        try {
+            String query = "SELECT * FROM emergencyUpdate WHERE emergencyID = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setInt(1, emergencyID);
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss");
+                list.add(new EmergencyUpdate(emergencyID, LocalDateTime.parse(result.getString("time"), formatter),
+                        result.getString("description")));
+            }
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            return null;
+        }
+
+        return list;
     }
 
+    /**
+     * Removes an account from the user table
+     * @param username The user's unique username
+     * @return true if a user was deleted, and false if a user was not deleted
+     */
     public static boolean removeAccount(String username) {
         try {
             String sql = "DELETE FROM users WHERE userName = ?";
@@ -151,6 +224,10 @@ public class DatabaseManager {
         }
     }
 
+    /**
+     * Main method. I don't know why this is here if if it's ever run.
+     * @param args Command line arguments. Never used
+     */
     public static void main(String[] args) {
         connect();
         test();
