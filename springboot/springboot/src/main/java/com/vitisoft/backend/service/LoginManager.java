@@ -148,13 +148,4 @@ public class LoginManager {
         return Base64.getEncoder().encodeToString(hashedPassword);
     }
 
-    /*
-     * @description method to print all currently stored accounts
-     *
-     * public printAccounts () {
-     * for (String key : accounts.keySet()) {
-     * System.out.println(key);
-     * }
-     * }
-     */
 }
