@@ -19,6 +19,7 @@ import java.util.Base64;
  * LoginManager class stores a hash map of all accounts currently
  * created. The class has methods to login, print the stored accounts,
  * add new accounts, and remove accounts.
+ * Core buinsess logic is to check the username and password
  */
 
 public class LoginManager {

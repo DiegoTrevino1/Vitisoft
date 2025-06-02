@@ -36,6 +36,79 @@
       <button id="newCallBtn">New Call</button>
       <div id="callList"></div>
 
+      <form id="sidebarForm">
+        <label>Unit:</label>
+        <input
+          type="text"
+          id="unit"
+          name="unit"
+          placeholder="Enter unit name (e.g., L1)"
+        />
+
+        <label>Type:</label>
+        <select id="type" name="type">
+          <option value="Fire">Fire</option>
+          <option value="Medical">Medical</option>
+          <option value="Police">Police</option>
+        </select>
+
+        <label>Status:</label>
+        <input
+          type="text"
+          id="status"
+          name="status"
+          placeholder="Enter emergency (e.g., structure fire)"
+        />
+
+        <label>Address:</label>
+        <input
+          type="text"
+          id="address"
+          name="address"
+          placeholder="Enter Address (e.g., 123 Main St)"
+        />
+
+        <label>Notes:</label>
+        <textarea id="notes" name="notes"></textarea>
+
+        <label>Call Received:</label>
+        <input
+          type="text"
+          id="callReceived"
+          name="callReceived"
+          placeholder="--:-- --"
+        />
+
+        <label>Dispatched:</label>
+        <input
+          type="text"
+          id="dispatched"
+          name="dispatched"
+          placeholder="--:-- --"
+        />
+
+        <label>On Scene:</label>
+        <input type="text" id="onScene" name="onScene" placeholder="--:-- --" />
+
+        <label>Transporting:</label>
+        <input
+          type="text"
+          id="transporting"
+          name="transporting"
+          placeholder="--:-- --"
+        />
+
+        <label>At Hospital:</label>
+        <input
+          type="text"
+          id="atHospital"
+          name="atHospital"
+          placeholder="--:-- --"
+        />
+
+        <button type="button" id="submitEmergency">Add Unit</button>
+      </form>
+
       <div class="legend">
         <h4>Unit Type Legend</h4>
         <div class="legend-item">
@@ -53,13 +126,11 @@
       </div>
     </div>
 
-    <!-- Manual Maps API Load with Safe Callback -->
     <script type="module">
       import { initMap } from "./js/mapSetup.js";
       import { showAddCallForm } from "./js/callPanel.js";
-      import { showLogHistory, populateLogs } from "./js/logPanel.js";
+      import { showLogHistory } from "./js/logPanel.js";
 
-      // Dynamically load Google Maps JS API without callback param
       const mapsScript = document.createElement("script");
       mapsScript.src =
         "https://maps.googleapis.com/maps/api/js?key=AIzaSyCjyFfDrIUfeGXJNJxG_YFIj2Oen-H90YQ";
@@ -71,36 +142,67 @@
       };
       document.head.appendChild(mapsScript);
 
-      // UI Event Listeners
       document
         .getElementById("newCallBtn")
         .addEventListener("click", showAddCallForm);
+
       document.getElementById("logHistoryBtn").addEventListener("click", () => {
         showLogHistory();
-        populateLogs([
-          {
-            date: "04/21",
-            time: "12:47",
-            type: "Burglary",
-            address: "923 W Dolarway Rd",
-            unit: "P1",
-          },
-          {
-            date: "04/21",
-            time: "12:55",
-            type: "House Fire",
-            address: "607 N Ruby St",
-            unit: "L1, A3",
-          },
-          {
-            date: "04/20",
-            time: "14:22",
-            type: "Medical",
-            address: "254 N Wilson Creek Rd",
-            unit: "A3, P1",
-          },
-        ]);
+        loadHistory();
       });
+
+      document
+        .getElementById("submitEmergency")
+        .addEventListener("click", async function () {
+          const emergency = {
+            userName: "dispatcher1",
+            receivedTime: new Date().toISOString(),
+            callerID: document.getElementById("unit").value,
+            details: document.getElementById("status").value,
+            address: document.getElementById("address").value,
+            type: document.getElementById("type").value,
+            isActive: true,
+            priority: 5,
+          };
+
+          console.log("Submitting:", emergency);
+
+          const res = await fetch("http://localhost:8080/api/emergency/add", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(emergency),
+          });
+
+          if (res.ok) {
+            alert("Emergency submitted.");
+            loadHistory();
+          } else {
+            alert("Submission failed.");
+          }
+        });
+
+      async function loadHistory() {
+        const res = await fetch("http://localhost:8080/api/emergency/all");
+        const data = await res.json();
+
+        const tbody = document.querySelector("#logTable tbody");
+        tbody.innerHTML = "";
+
+        data.forEach((e) => {
+          const received = new Date(e.receivedTime);
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${received.toLocaleDateString()}</td>
+            <td>${received.toLocaleTimeString()}</td>
+            <td>${e.type}</td>
+            <td>${e.address}</td>
+            <td>${e.callerID}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      }
+
+      window.onload = loadHistory;
     </script>
   </body>
 </html>

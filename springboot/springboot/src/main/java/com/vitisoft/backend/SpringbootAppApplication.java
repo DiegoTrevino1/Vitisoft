@@ -34,13 +34,14 @@ public class SpringbootAppApplication {
 		return args -> {
 			// Connect to the database
 			DatabaseManager db = new DatabaseManager();
-			db.connect(); // Ensure this method works with your MySQL + Spring setup
-			db.test(); // Optional: test query or sample operation
+			db.connect(); // helpful for confirming connection
 
-			// Set up login manager (if needed)
-			LoginManager lm = new LoginManager(db);
+			// REMOVE or comment out test insert
+			// db.test();
 
-			// Optional test call: lm.logIn("admin", "password");
+			// Optional: only needed if you're manually testing login logic
+			// LoginManager lm = new LoginManager(db);
+			// lm.logIn("admin", "password");
 		};
 	}
 }

@@ -1,8 +1,8 @@
-import { stationLocations, map, geocoder } from "./mapSetup.js";
+import { stationLocations, geocoder } from "./mapSetup.js";
 import { animateVehicleAlongRoute } from "./unitRouting.js";
 
 /**
- * Displays a new form panel for users to input call details.
+ * Adds a new dynamic call panel and wires backend connection
  */
 export function showAddCallForm() {
   const callList = document.getElementById("callList");
@@ -10,89 +10,63 @@ export function showAddCallForm() {
   panel.className = "call-panel";
 
   panel.innerHTML = `
-    <strong>Unit:</strong> <input type="text" class="unit" placeholder="Enter unit name (e.g., L1)" ><br>
+    <strong>Unit:</strong> <input type="text" class="unit"><br>
     <strong>Type:</strong>
     <select class="unit-type">
-      <option value="fire">Fire</option>
-      <option value="police">Police</option>
-      <option value="medical">Medical</option>
+      <option value="Fire">Fire</option>
+      <option value="Police">Police</option>
+      <option value="Medical">Medical</option>
     </select><br>
-    <strong>Status:</strong> <input type="text" class="status" placeholder="Enter emergency (e.g., House Fire)"><br>
-    <strong>Address:</strong> <input type="text" class="address" placeholder="Enter Address (e.g., 123 Main St)"><br>
-    <strong>Notes:</strong><br>
-    <textarea class="notes"></textarea><br><br>
-
-    <label><strong>Call Received:</strong></label>
-    <input type="time" class="ts-received"><br>
-    <label><strong>Dispatched:</strong></label>
-    <input type="time" class="ts-dispatched"><br>
-    <label><strong>On Scene:</strong></label>
-    <input type="time" class="ts-onscene"><br>
-    <label><strong>Transporting:</strong></label>
-    <input type="time" class="ts-transport"><br>
-    <label><strong>At Hospital:</strong></label>
-    <input type="time" class="ts-arrived"><br>
-
-    <button class="add-unit-btn">Add Unit</button>
+    <strong>Status:</strong> <input type="text" class="status"><br>
+    <strong>Address:</strong> <input type="text" class="address"><br>
+    <button class="submit-new-call">Add Call</button>
   `;
 
-  panel.querySelector(".add-unit-btn").addEventListener("click", () => addCall(panel));
-  callList.prepend(panel);
+  callList.prepend(panel); // Add the panel to the page
+
+  // 🔗 Wire the backend logic to this NEW panel's button
+  const btn = panel.querySelector(".submit-new-call");
+  btn.addEventListener("click", async () => {
+    const unit = panel.querySelector(".unit").value;
+    const type = panel.querySelector(".unit-type").value;
+    const status = panel.querySelector(".status").value;
+    const address = panel.querySelector(".address").value;
+
+    const emergency = {
+      userName: "dispatcher1",
+      receivedTime: new Date().toISOString(),
+      callerID: unit,
+      details: status,
+      address: address,
+      type: type,
+      isActive: true,
+      priority: 5
+    };
+
+    console.log("Submitting from New Call Panel:", emergency);
+
+    const res = await fetch("http://localhost:8080/api/emergency/add", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(emergency)
+    });
+
+    if (res.ok) {
+      alert(" New emergency submitted!");
+      geocodeAndAnimate(unit, address, type);
+    } else {
+      alert(" Failed to submit new call.");
+    }
+  });
 }
 
-/**
- * Collects call form data and retains the form inputs as editable fields.
- * @param {HTMLElement} panel - The call panel containing input fields.
- */
-function addCall(panel) {
-  const unit = panel.querySelector(".unit").value;
-  const type = panel.querySelector(".unit-type").value;
-  const status = panel.querySelector(".status").value;
-  const address = panel.querySelector(".address").value;
-  const notes = panel.querySelector(".notes").value;
-  const received = panel.querySelector(".ts-received").value;
-  const dispatched = panel.querySelector(".ts-dispatched").value;
-  const onscene = panel.querySelector(".ts-onscene").value;
-  const transport = panel.querySelector(".ts-transport").value;
-  const arrived = panel.querySelector(".ts-arrived").value;
-
-  let timestampInputs = `
-    <label><strong>Call Received:</strong></label>
-    <input type="time" class="ts-received" value="${received}"><br>
-    <label><strong>Dispatched:</strong></label>
-    <input type="time" class="ts-dispatched" value="${dispatched}"><br>
-    <label><strong>On Scene:</strong></label>
-    <input type="time" class="ts-onscene" value="${onscene}"><br>
-  `;
-
-  if (type === "police" || type === "medical") {
-    timestampInputs += `
-      <label><strong>Transporting:</strong></label>
-      <input type="time" class="ts-transport" value="${transport}"><br>
-    `;
-  }
-  if (type === "medical") {
-    timestampInputs += `
-      <label><strong>At Hospital:</strong></label>
-      <input type="time" class="ts-arrived" value="${arrived}"><br>
-    `;
-  }
-
-  panel.innerHTML = `
-    <strong>Unit:</strong> <input type="text" class="unit" value="${unit}"><br>
-    <strong>Type:</strong> <input type="text" class="unit-type" value="${type}" readonly><br>
-    <strong>Status:</strong> <input type="text" class="status" value="${status}"><br>
-    <strong>Address:</strong> <input type="text" class="address" value="${address}"><br>
-    <strong>Notes:</strong><br>
-    <textarea class="notes">${notes}</textarea><br>
-    ${timestampInputs}
-  `;
-
+// Animation logic
+function geocodeAndAnimate(unit, address, type) {
   geocoder.geocode({ address }, (results, status) => {
     if (status === "OK") {
       const destination = results[0].geometry.location;
-      const origin = stationLocations[type];
-      animateVehicleAlongRoute(unit, origin, destination, type);
+      const origin = stationLocations[type.toLowerCase()];
+      animateVehicleAlongRoute(unit, origin, destination, type.toLowerCase());
     } else {
       alert("Geocode failed: " + status);
     }
