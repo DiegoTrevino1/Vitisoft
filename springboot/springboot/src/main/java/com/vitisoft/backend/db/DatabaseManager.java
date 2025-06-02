@@ -17,8 +17,17 @@ import java.time.format.DateTimeFormatter;
  */
 public class DatabaseManager {
 
+    /**
+     * The url to find the database (local MySQL database)
+     */
     public static String dburl = "jdbc:mysql://localhost:3306/expeditedEmergencyDB";
+    /**
+     * Username for connecting to the database
+     */
     public static String dbUserName = "bigBoss";
+    /**
+     * Password for connecting to the database
+     */
     public static String dbPassword = "123456";
 
     /**
@@ -57,6 +66,8 @@ public class DatabaseManager {
 
             EmergencyUpdate emergencyUpdate = new EmergencyUpdate(emergency.id, LocalDateTime.now(), "More fire!");
             insertEmergencyUpdate(emergencyUpdate);
+
+            ArrayList<EmergencyUpdate> list = getEmergencyUpdates(1);
         }
     }
 

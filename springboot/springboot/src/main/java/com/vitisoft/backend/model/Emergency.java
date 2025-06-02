@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.OffsetDateTime;
 
+/**
+ * Class to represent an emergency. Mirriors entries in the emergencies table in the database
+ */
 public class Emergency {
 
     @JsonProperty("id")
@@ -45,6 +48,21 @@ public class Emergency {
     public Emergency(String userName, OffsetDateTime receivedTime,
             String callerID, String details, String address,
             String type, boolean isActive, int priority) {
+    /**
+     * Create a new Emergency object with the ID chosen automatically
+     * @param userName The username of the user who created this emergency
+     * @param receivedTime The time when this emergency was first received
+     * @param callerID The caller ID of whoever called 911, if available
+     * @param details The address where the emergency is happening
+     * @param address The type of emergency it is
+     * @param type Whether this emergency is currently active, or if it's been resolved
+     * @param isActive Whether this emergency is currently active, or if it's been resolved
+     * @param priority The priority of the emergency
+     */
+    public Emergency(String userName, LocalDateTime receivedTime,
+            String callerID, String details, String address, String type, boolean isActive, int priority) {
+        this.id = nextID;
+        nextID++;
         this.userName = userName;
         this.receivedTime = receivedTime;
         this.callerID = callerID;
@@ -59,6 +77,20 @@ public class Emergency {
     public Emergency(int id, String userName, OffsetDateTime receivedTime,
             String callerID, String details, String address,
             String type, boolean isActive, int priority) {
+    /**
+     * Create a new Emergency object
+     * @param id The emergeny's unique ID
+     * @param userName The username of the user who created this emergency
+     * @param receivedTime The time when this emergency was first received
+     * @param callerID The caller ID of whoever called 911, if available
+     * @param details The address where the emergency is happening
+     * @param address The type of emergency it is
+     * @param type Whether this emergency is currently active, or if it's been resolved
+     * @param isActive Whether this emergency is currently active, or if it's been resolved
+     * @param priority The priority of the emergency
+     */
+    public Emergency(int id, String userName, LocalDateTime receivedTime,
+            String callerID, String details, String address, String type, boolean isActive, int priority) {
         this.id = id;
         this.userName = userName;
         this.receivedTime = receivedTime;
